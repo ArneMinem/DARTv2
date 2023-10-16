@@ -7,6 +7,7 @@
 
 import sys
 import time
+import numpy as np
 
 class DartV2Control():
     def __init__(self,dart_bot):
@@ -40,7 +41,7 @@ class DartV2Control():
                 self.encoders_front_right_mem,self.encoders_front_right_last)
             self.encoders_front_left_mem = self.encoders_front_left_last
             self.encoders_front_right_mem = self.encoders_front_right_last
-            return [deltaOdoLeft,deltaOdoRight]
+            return [deltaOdoLeft,deltaOdoRight,(deltaOdoLeft+deltaOdoRight)*np.pi*0.005/12]
         elif side == "left":
             deltaOdoLeft = self.delta_odometers_without_jumps (
                 self.encoders_front_left_mem,self.encoders_front_left_last)
@@ -51,6 +52,9 @@ class DartV2Control():
                 self.encoders_front_right_mem,self.encoders_front_right_last)
             self.encoders_front_right_mem = self.encoders_front_right_last
             return deltaOdoRight
+        
+    def ticks_meters(self, deltaOdoLeft, deltaOdoRight):
+        return((deltaOdoLeft+deltaOdoRight)*np.pi*0.005/12)
 
     def front_encoders_get_memory (self):
         return self.encoders_front_left_mem, self.encoders_front_right_mem
